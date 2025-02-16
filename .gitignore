@@ -1,0 +1,15 @@
+# Byte-compiled / compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+*.env
+
+# Cache files
+*.cache
+*.pytest_cache/
+.coverage
+*.mypy_cache/
+
