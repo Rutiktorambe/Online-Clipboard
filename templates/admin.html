@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        fetch("/admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              document.getElementById("login-form").classList.add("hidden");
+              document.getElementById("admin-panel").classList.remove("hidden");
+              loadData();
+            } else {
+              alert("Invalid Credentials!");
+            }
+          });
+      }
+
+      function loadData(sort = "desc") {
+        fetch(`/admin/data?sort=${sort}`)
+          .then((response) => response.json())
+          .then((data) => {
+            let table = document.getElementById("data-table-body");
+            table.innerHTML = "";
+
+            data.forEach((row, index) => {
+              table.innerHTML += `
+              <tr class="border-b ${
+                index % 2 === 0 ? "bg-gray-100" : "bg-white"
+              }">
+                <td class="px-4 py-2">${row.id}</td>
+                <td class="px-4 py-2">${row.clip_id}</td>
+                <td class="px-4 py-2">${row.content}</td>
+                <td class="px-4 py-2">${row.created_at}</td>
+              </tr>`;
+            });
+          });
+      }
+
+      function deleteAllData() {
+        if (!confirm("Are you sure you want to delete all data?")) return;
+
+        fetch("/admin/delete", { method: "DELETE" })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+            loadData();
+          });
+      }
+    </script>
+  </head>
+  <body
+    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4"
+  >
+    <!-- Login Form -->
+    <div
+      id="login-form"
+      class="bg-white shadow-lg p-6 rounded-lg w-96 text-center"
+    >
+      <h1 class="text-2xl font-bold mb-4">Admin Login</h1>
+      <input
+        type="text"
+        id="username"
+        placeholder="Username"
+        class="w-full p-2 border rounded mb-3 focus:outline-blue-500"
+      />
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        class="w-full p-2 border rounded mb-3 focus:outline-blue-500"
+      />
+      <button
+        onclick="login()"
+        class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+      >
+        Login
+      </button>
+    </div>
+
+    <!-- Admin Panel -->
+    <div
+      id="admin-panel"
+      class="hidden bg-white shadow-lg p-6 rounded-lg w-full max-w-4xl mt-6"
+    >
+      <h2 class="text-xl font-bold mb-4 text-center">Clipboard Data</h2>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between mb-4">
+        <div>
+          <button
+            onclick="loadData('asc')"
+            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Sort Ascending
+          </button>
+          <button
+            onclick="loadData('desc')"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Sort Descending
+          </button>
+        </div>
+        <button
+          onclick="deleteAllData()"
+          class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+          Delete All
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr class="bg-gray-200 text-gray-700">
+              <th class="px-4 py-2 border">ID</th>
+              <th class="px-4 py-2 border">Clip ID</th>
+              <th class="px-4 py-2 border">Content</th>
+              <th class="px-4 py-2 border">Created At</th>
+            </tr>
+          </thead>
+          <tbody id="data-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
