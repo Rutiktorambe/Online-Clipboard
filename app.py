@@ -36,6 +36,10 @@ def index():
 def get_page():
     return render_template("get.html")
 
+@app.route("/fun")
+def fun():
+    return render_template("fun.html")
+
 @app.route("/about")
 def about():
     return render_template("about.html")
