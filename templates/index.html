@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Clipboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-blue-600 p-4 text-white flex justify-between">
+      <a href="/" class="text-xl font-bold">Online Clipboard</a>
+      <div>
+        <a href="/get" class="px-4">Retrieve</a>
+        <a href="/about" class="px-4">About</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex justify-center items-center h-screen">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-bold mb-4">Paste Your Text</h2>
+        <textarea
+          id="clipboardText"
+          class="w-full p-2 border rounded"
+          rows="5"
+        ></textarea>
+        <button
+          onclick="saveClipboard()"
+          class="w-full mt-3 bg-blue-500 text-white py-2 rounded hover:bg-blue-700"
+        >
+          Save
+        </button>
+        <p id="result" class="mt-3 text-green-600 font-bold"></p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center p-4 mt-6 bg-gray-800 text-white">
+      <p>
+        Follow me:
+        <a
+          href="https://github.com/your-github"
+          target="_blank"
+          class="text-blue-400"
+          >GitHub</a
+        >
+        |
+        <a
+          href="https://linkedin.com/in/your-profile"
+          target="_blank"
+          class="text-blue-400"
+          >LinkedIn</a
+        >
+      </p>
+    </footer>
+
+    <script>
+      async function saveClipboard() {
+        const content = document.getElementById("clipboardText").value;
+        if (!content) {
+          alert("Please enter some text!");
+          return;
+        }
+        const response = await fetch("/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          document.getElementById("result").innerText =
+            "Your ID: " + data.clip_id;
+        } else {
+          alert("Failed to save text.");
+        }
+      }
+    </script>
+  </body>
+</html>
