@@ -1,0 +1,80 @@
+{% include 'navbar.html' %}
+
+<body
+  class="bg-gray-900 text-white flex flex-col justify-center items-center min-h-screen mt-10"
+>
+  <div
+    id="languageSelect"
+    class="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-96 mt-10"
+  >
+    <h1 class="text-2xl font-bold mb-4">Welcome, Son of a Bitch!</h1>
+
+    <button
+      onclick="startGame('en')"
+      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 m-2"
+    >
+      English
+    </button>
+    OR
+    <button
+      onclick="startGame('es')"
+      class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 m-2"
+    >
+      Español
+    </button>
+  </div>
+
+  <div
+    id="game"
+    class="hidden bg-gray-800 p-6 rounded-lg shadow-lg text-center w-96 mt-10"
+  >
+    <h1 class="text-2xl font-bold mb-4">Welcome, Son of a Bitch!</h1>
+    <p id="challengeText" class="text-lg font-semibold mb-4"></p>
+  </div>
+
+  {% include 'footer.html' %}
+
+  <script>
+    let moved = false;
+    let languageSelected = false;
+
+    function startGame(lang) {
+      document.getElementById("languageSelect").classList.add("hidden");
+      document.getElementById("game").classList.remove("hidden");
+      languageSelected = true;
+
+      let text =
+        lang === "en"
+          ? "Whoever moves first is gay."
+          : "Quien se mueva primero es gay.";
+
+      document.getElementById("challengeText").innerText = text;
+
+      // Start listening for mouse movement after language selection
+      document.addEventListener("mousemove", triggerAlert, { once: true });
+    }
+
+    function triggerAlert() {
+      if (!moved && languageSelected) {
+        moved = true;
+        setTimeout(() => {
+          alert("You're gay!");
+        }, 3000); // 3-second delay after first movement
+      }
+    }
+
+    // Trigger when user tries to leave the page
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden && languageSelected) {
+        alert("You're gay!");
+      }
+    });
+
+    window.addEventListener("beforeunload", function (event) {
+      if (languageSelected) {
+        event.preventDefault();
+        alert("You're gay!");
+      }
+    });
+  </script>
+</body>
