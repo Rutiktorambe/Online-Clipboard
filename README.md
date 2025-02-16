@@ -1,4 +1,4 @@
-# Clipboard Sharing Web Application
+# Online Sharing Web Application
 
 A simple web application for sharing text snippets securely. Users can save text content and retrieve it using a unique clip ID. The application also includes an admin panel for managing saved clips.
 
